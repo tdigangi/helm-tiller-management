@@ -1,0 +1,50 @@
+# Default values for demo-developer-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+api_name: authorization-api
+
+annotations:
+  deployment.kubernetes.io/revision: "1"
+
+namespace: helm-playground
+
+# image default values
+image:
+  url: gcr.io
+  repository: google-samples
+  name: hello-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# replica counts for the deployed services
+replicaCount:
+  authorization: 2
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 1
+
+container_ports: |
+    - containerPort: 8080
+      protocol: TCP
+
+the_env: |
+        - name: HOSTING_PLATFORM
+          value: GCP
+        - name: NODE_ENV
+          value: demo
+
+securityContext:
+  user: 2
+  escalation: false
+
+the_volumeMounts: |
+  - name: demo-credentials
+    mountPath: /secrets/cloudsql
+    readOnly: true
+
+volumes: |
+  - name: demo-credentials
+    secret:
+      secretName: demo-credentials

@@ -1,0 +1,14 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: helm-mgmt
+  name: helm-robot-binding
+subjects:
+- kind: User
+  name: robot@demo.com
+  apiGroup: rbac.authorization.k8s.io
+  namespace: helm-mgmt
+roleRef:
+  kind: Role
+  name: helm-robot
+  apiGroup: rbac.authorization.k8s.io

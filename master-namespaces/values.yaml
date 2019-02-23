@@ -1,0 +1,5 @@
+namespace_enabled: true
+keep_namespaces:
+  enabled: true
+  keep_namespace: "keep"
+namespace_name: "acme"

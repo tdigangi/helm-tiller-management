@@ -1,0 +1,40 @@
+{{- if .Values.namespace_enabled -}}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+{{- if $.Values.keep_namespaces.enabled }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.keep_namespaces.keep_namespace }}
+{{- end }}
+  name: {{ .Values.namespace_name }}
+  labels:
+    app: {{ .Values.namespace_name }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Values.namespace_name }}
+  name: developer-view
+rules:
+- apiGroups: [""]
+  resources: ["pods", "deployments"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: developer-view-binding
+  namespace: {{ .Values.namespace_name }}
+subjects:
+- kind: User
+  name: "developer@demo.com"
+  namespace: helm-playground
+roleRef:
+  kind: Role
+  name: developer-view
+  apiGroup: rbac.authorization.k8s.io
